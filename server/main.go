@@ -23,10 +23,11 @@ package main
 import (
 	"log"
 	"net"
-    "os/exec"
+	"os/exec"
+
+	pb "github.com/kjunichi/gopheron-raspberrypi/helloworld"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	pb "github.com/kjunichi/gopheron-raspberrypi/helloworld"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -43,11 +44,11 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 }
 
 func (s *server) SayHelloAgain(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-        out, err := exec.Command("vcgencmd", "measure_temp").Output()
-        if err != nil {
-            log.Fatalf("Exec fail: %v",err)
-        }
-        return &pb.HelloReply{Message: string(out)}, nil
+	out, err := exec.Command("vcgencmd", in.Name).Output()
+	if err != nil {
+		log.Fatalf("Exec fail: %v", err)
+	}
+	return &pb.HelloReply{Message: string(out)}, nil
 }
 
 func main() {
